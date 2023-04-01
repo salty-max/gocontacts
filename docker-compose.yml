@@ -1,0 +1,27 @@
+version: '3'
+name: "gocker"
+services:
+  pg_db:
+    container_name: pg_db
+    restart: always
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+      - DATABASE_HOST=${DATABASE_HOST}
+    build: ./migrations/postgres
+    ports:
+      - 1234:5432
+
+  app:
+    container_name: test_app
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./:/usr/src/app/
+    ports:
+      - "1664:1664"
+    depends_on:
+      - pg_db
